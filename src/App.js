@@ -1,23 +1,32 @@
-import logo from './logo.svg';
 import './App.css';
+import BarChart from './BarChart';
+import sunshine from './sunshine.json'
+import Select from 'react-select';
+import { useState } from 'react';
+
+const options = [
+  {value: 'JUL', label: 'July'},
+  {value: 'JUN', label: 'June'},
+  {value: 'AUG', label: 'August'},
+]
 
 function App() {
+  const [month, setMonth] = useState(options[0])
+  const data = sunshine.map((d) => {
+    return { city: d.CITY, sunshine: d[month.value]}
+  })
+  .sort((a,b) => b.sunshine - a.sunshine)
+  .slice(0, 20)
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className='header'>
+        <h1>Sunshine By City</h1>
+        <Select defaultValue={month} onChange={setMonth} options={options} /> 
+      </div>
+      <div className='container'>
+        <BarChart data={data} height={600} width={900} />
+      </div>
     </div>
   );
 }
